@@ -1,11 +1,18 @@
-public class Buffer {
+public class Bafer {
     int size;
-    public Buffer(int n) {
-        this.size = n;
-    }
-    private Object [] data = new Object [this.size +1];
+    private double[] data;
     private int begin = 0, end = 0;
-    public synchronized void push ( Object o) {
+
+    public int getSize() {
+        return this.size;
+    }
+
+    public Bafer(int n) {
+        this.size = n;
+        this.data = new double[n];
+    }
+
+    public synchronized void queue ( double d) {
         while ( isFull ()) {
             try {
                 wait();
@@ -13,11 +20,12 @@ public class Buffer {
                 e.printStackTrace();
             }
         }
-        data [ begin ] = o;
-        begin = next ( begin );
+        data[end] = d;
+        end  = next ( end );
         notifyAll ();
     }
-    public synchronized Object pop () {
+
+    public synchronized double dequeue () {
         while ( isEmpty ()) {
             try {
                 wait ();
@@ -25,12 +33,13 @@ public class Buffer {
                 e.printStackTrace();
             }
         }
-        Object result = data [ end ];
-        end = next ( end );
+        double result = data [ begin ];
+        begin = next ( begin );
         notifyAll ();
         return result ;
     }
+
     private boolean isEmpty () { return begin == end ; }
-    private boolean isFull () { return next ( begin ) == end ; }
-    private int next ( int i) { return (i +1) %( this.size +1); }
+    private boolean isFull () { return end == size; }
+    private int next ( int i) { return (i +1); }
 }
