@@ -1,4 +1,5 @@
 public class Bafer {
+
     int size;
     private double[] data;
     private int begin = 0, end = 0;
