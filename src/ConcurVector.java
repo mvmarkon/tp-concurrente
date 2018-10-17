@@ -12,26 +12,29 @@ public class ConcurVector {
         elements = new double[dim];
     }
 
-    /*private void balanceElements() {
+    private void balanceElements() {
         int carga = (int)(dimension / threads);
-        for  {
-
+        int [] t = new int[threads];
+        for (int i = 0; i < t.length; i++) {
+            t[i]= carga;
         }
-        for (int i = 0; i < ; i++) {
-
+        int resto = dimension % threads;
+        for(int i = 0; i < resto; i++) {
+            t[i] = t[i]++;
+            resto--;
         }
     }
 
-    public double[][] dividirVector(){
+    /*public double[][] dividirVector(){
         double[][] elembal = new double[];
-        if(v.size()>=n){
-            int longitud = v.size()/n;
-            int restantes = v.size();
-            for(int i = 0;i<n;i++){
-                enteros[i] = (Vector<Integer>) new Vector<Integer>();
-                if(i==n-1){
+        if(dimension>=threads){
+            int longitud = dimension/threads;
+            int restantes = dimension;
+            for(int i = 0;i<threads;i++){
+                elembal[i] = double[];
+                if(i==threads-1){
                     for (int j=0;j<restantes;j++){
-                        enteros[i].add(v.get(i*longitud+j));
+                        elembal[i] = elements[(i*longitud+j)];
                     }
                 }
                 else{
