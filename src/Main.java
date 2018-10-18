@@ -20,5 +20,7 @@ public class Main {
         System.out.println("cuarto: " + cola.dequeue());
         System.out.println("quinto: " + cola.dequeue());
 
+        ConcurVector cv = new ConcurVector(175, 11);
+        cv.balanceElements();
     }
 }

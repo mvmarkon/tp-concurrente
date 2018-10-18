@@ -12,16 +12,22 @@ public class ConcurVector {
         elements = new double[dim];
     }
 
-    private void balanceElements() {
+    public void balanceElements() {
         int carga = (int)(dimension / threads);
         int [] t = new int[threads];
         for (int i = 0; i < t.length; i++) {
             t[i]= carga;
         }
         int resto = dimension % threads;
+        System.out.println("Carga: " + carga + " , resto: "+ resto);
         for(int i = 0; i < resto; i++) {
-            t[i] = t[i]++;
-            resto--;
+            t[i] = ++t[i];
+        }
+        System.out.println("Threads: " + t );
+        int n = 0;
+        for (int c: t) {
+            System.out.println(n + " la carga es de "+ c);
+            ++n;
         }
     }
 
