@@ -14,6 +14,7 @@ public class TaskTP {
 
 
     private double value;
+    public Operation operation;
     private double[] originalVector;
     private double[] otherVector;
     private  List<Integer> indexes;
@@ -23,10 +24,13 @@ public class TaskTP {
     public TaskTP(){}
 
 
-    public TaskTP(double[] originalVector, double[] otherVector, List<Integer> indexes){
+    public TaskTP(double value, Operation operation, double[] originalVector, double[] otherVector, List<Integer> indexes, int position){
+        this.value = value;
+        this.operation = operation;
         this.originalVector = originalVector;
         this.otherVector = otherVector;
         this.indexes = indexes;
+        this.position = position;
     }
 
 

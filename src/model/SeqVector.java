@@ -1,4 +1,4 @@
-
+package model;
 
 /** La clase representa un vector de longitud fija de 
  * numeros de punto flotante. */
@@ -9,7 +9,7 @@ public class SeqVector {
 	private double[] elements;
 	
 	
-	/** Constructor del SeqVector.
+	/** Constructor del model.SeqVector.
 	 * @param size, la longitud del vector.
 	 * @precondition size > 0. */
 	public SeqVector(int size) {

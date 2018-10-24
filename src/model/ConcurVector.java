@@ -1,9 +1,11 @@
+package model;
+
 public class ConcurVector {
 
     private double[] elements;
     int dimension;
     int threads;
-    // Bafer buf;
+    // model.Bafer buf;
     int[] balancedData;
 
 
