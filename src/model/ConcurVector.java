@@ -1,31 +1,66 @@
 public class ConcurVector {
 
     private double[] elements;
-    int dimension, threads, load;
+    int dimension;
+    int threads;
     // Bafer buf;
+    int[] balancedData;
 
 
-    public ConcurVector(int dim, int threads/*, int load*/){
+    public ConcurVector(int dim, int threads){
         this.dimension = dim;
         this.threads = threads;
-        //this.load = load;
-        elements = new double[dim];
+        this.elements = new double[dim];
     }
 
-    public void balanceElements() {
-        int carga = (int)(dimension / threads);
-        int [] t = new int[threads];
-        for (int i = 0; i < t.length; i++) {
-            t[i]= carga;
+
+    public void setBalancedData(int[] balance){
+        this.balancedData = balance;
+    }
+
+
+    public void balance(int dimension, int threads) {
+        int carga = (dimension / threads);
+        int[] arrayThreads = new int[threads];
+        for (int i = 0; i < arrayThreads.length; i++) {
+            arrayThreads[i]= carga;
         }
+
         int resto = dimension % threads;
         System.out.println("Carga: " + carga + " , resto: "+ resto);
         for(int i = 0; i < resto; i++) {
-            t[i] = ++t[i];
+            arrayThreads[i] = ++arrayThreads[i];
+
         }
-        System.out.println("Threads: " + t );
+        System.out.println("Threads: " + arrayThreads );
+
         int n = 0;
-        for (int c: t) {
+        for (int c: arrayThreads) {
+            System.out.println(n + " la carga es de "+ c);
+            ++n;
+        }
+        this.setBalancedData(arrayThreads);
+    }
+
+
+
+    public void balanceElements() {
+        int carga = (int)(dimension / threads);
+        int [] arrayThreads = new int[threads];
+        for (int i = 0; i < arrayThreads.length; i++) {
+            arrayThreads[i]= carga;
+        }
+
+        int resto = dimension % threads;
+        System.out.println("Carga: " + carga + " , resto: "+ resto);
+        for(int i = 0; i < resto; i++) {
+            arrayThreads[i] = ++arrayThreads[i];
+
+        }
+        System.out.println("Threads: " + arrayThreads );
+
+        int n = 0;
+        for (int c: arrayThreads) {
             System.out.println(n + " la carga es de "+ c);
             ++n;
         }

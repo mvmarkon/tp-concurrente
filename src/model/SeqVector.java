@@ -33,7 +33,7 @@ public class SeqVector {
 	
 	/** Pone el valor d en la posicion i del vector. 
 	 * @param i, la posicion a setear.
-	 * @param d, el valor a ser asignado en la posicion i.
+	 * @PARAM D, EL VALOR A SER ASIGNADO EN LA POSICION I.
 	 * @precondition 0 <= i < dimension. */
 	public void set(int i, double d) {
 		elements[i] = d;

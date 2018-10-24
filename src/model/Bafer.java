@@ -1,19 +1,21 @@
 public class Bafer {
 
     int size;
-    private double[] data;
+    private TaskTP[] data;
     private int begin = 0, end = 0;
 
     public int getSize() {
         return this.size;
     }
 
+
     public Bafer(int n) {
         this.size = n;
-        this.data = new double[n];
+        this.data = new TaskTP[n];
     }
 
-    public synchronized void queue ( double d) {
+
+    public synchronized void queue (TaskTP task) {
         while ( isFull ()) {
             try {
                 wait();
@@ -21,12 +23,13 @@ public class Bafer {
                 e.printStackTrace();
             }
         }
-        data[end] = d;
-        end  = next ( end );
+        this.data[this.end] = task;
+        this.end  = next(this.end);
         notifyAll ();
     }
 
-    public synchronized double dequeue () {
+
+    public synchronized TaskTP dequeue () {
         while ( isEmpty ()) {
             try {
                 wait ();
@@ -34,13 +37,13 @@ public class Bafer {
                 e.printStackTrace();
             }
         }
-        double result = data [ begin ];
-        begin = next ( begin );
+        TaskTP result = this.data [this.begin];
+        this.begin = next(this.begin);
         notifyAll ();
         return result ;
     }
 
-    private boolean isEmpty () { return begin == end ; }
-    private boolean isFull () { return end == size; }
-    private int next ( int i) { return (i +1); }
+    public boolean isEmpty () { return this.begin == this.end ; }
+    public boolean isFull () { return this.end == this.size; }
+    public int next ( int i) { return (i + 1); }
 }
