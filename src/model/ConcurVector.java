@@ -29,12 +29,9 @@ public class ConcurVector {
         }
 
         int resto = dimension % threads;
-        System.out.println("Carga: " + carga + " , resto: "+ resto);
         for(int i = 0; i < resto; i++) {
             arrayThreads[i] = ++arrayThreads[i];
-
         }
-        System.out.println("Threads: " + arrayThreads );
 
         int n = 0;
         for (int c: arrayThreads) {

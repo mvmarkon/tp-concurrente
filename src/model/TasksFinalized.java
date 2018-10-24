@@ -9,11 +9,11 @@ import java.util.List;
 public class TasksFinalized {
 
 
-    private List<TaskTP> finalized = new ArrayList<TaskTP>();
+    private List<Task> finalized = new ArrayList<Task>();
 
 
 
-    public synchronized void addTask(TaskTP task){
+    public synchronized void addTask(Task task){
         this.finalized.add(task);
 
 

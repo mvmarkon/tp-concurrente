@@ -3,7 +3,7 @@ package model;
 public class Bafer {
 
     int size;
-    private TaskTP[] data;
+    private Task[] data;
     private int begin = 0, end = 0;
 
     public int getSize() {
@@ -13,11 +13,11 @@ public class Bafer {
 
     public Bafer(int n) {
         this.size = n;
-        this.data = new TaskTP[n];
+        this.data = new Task[n];
     }
 
 
-    public synchronized void queue (TaskTP task) {
+    public synchronized void queue (Task task) {
         while ( isFull ()) {
             try {
                 wait();
@@ -31,7 +31,7 @@ public class Bafer {
     }
 
 
-    public synchronized TaskTP dequeue () {
+    public synchronized Task dequeue () {
         while ( isEmpty ()) {
             try {
                 wait ();
@@ -39,7 +39,7 @@ public class Bafer {
                 e.printStackTrace();
             }
         }
-        TaskTP result = this.data [this.begin];
+        Task result = this.data [this.begin];
         this.begin = next(this.begin);
         notifyAll ();
         return result ;

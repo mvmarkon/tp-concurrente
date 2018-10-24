@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThreadPoolTP {
+public class ThreadPool {
 
 
     private int threads;
@@ -11,8 +11,7 @@ public class ThreadPoolTP {
     private List<Worker> workers = new ArrayList<Worker>();
 
 
-
-    public ThreadPoolTP(int threads, int load){
+    public ThreadPool(int threads, int load){
         this.threads = threads;
         this.load = load;
     }

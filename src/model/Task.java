@@ -5,8 +5,12 @@ import java.util.List;
 /**
  * Created by mariano on 22/10/18.
  */
-public class TaskTP {
+public class Task {
 
+
+    public void done() {
+        completed = true;
+    }
 
     public enum Operation {
         ADD, SUM, MUL, ABS, MEAN, PROD, NORM
@@ -19,12 +23,13 @@ public class TaskTP {
     private double[] otherVector;
     private  List<Integer> indexes;
     private int position;
+    private boolean completed = false;
 
 
-    public TaskTP(){}
+    public Task(){}
 
 
-    public TaskTP(double value, Operation operation, double[] originalVector, double[] otherVector, List<Integer> indexes, int position){
+    public Task(double value, Operation operation, double[] originalVector, double[] otherVector, List<Integer> indexes, int position){
         this.value = value;
         this.operation = operation;
         this.originalVector = originalVector;
@@ -34,7 +39,7 @@ public class TaskTP {
     }
 
 
-    public TaskTP(double[] originalVector, List<Integer> indexes){
+    public Task(double[] originalVector, List<Integer> indexes){
         this.originalVector = originalVector;
         this.indexes = indexes;
     }
