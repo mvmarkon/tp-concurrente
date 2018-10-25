@@ -5,10 +5,9 @@ import java.util.List;
 
 public class ThreadPool {
 
-
     private int threads;
     private int load;
-    private List<Worker> workers = new ArrayList<Worker>();
+    private List<Worker> workers = new ArrayList<>();
 
 
     public ThreadPool(int threads, int load){
@@ -16,11 +15,11 @@ public class ThreadPool {
         this.load = load;
     }
 
-
-
-
-
-
-
-
+    public void createWorkers(Bafer taskBafer, TasksFinalized completedtasks) {
+        for (int i = 0; i < threads; i++) {
+            Worker worker = new Worker(taskBafer, completedtasks);
+            workers.add(worker);
+            worker.start();
+        }
+    }
 }

@@ -5,13 +5,13 @@ public class Worker extends Thread {
 
 
     private Bafer bafer;
-    // private TasksFinalized tasksFinalized;
+    private TasksFinalized tasksFinalized;
 
 
 
     public Worker(Bafer bafer, TasksFinalized tasksFinalized){
         this.bafer = bafer;
-        //this.tasksFinalized = tasksFinalized;
+        this.tasksFinalized = tasksFinalized;
     }
 
     private void processTask( Task ttp) {
@@ -35,14 +35,6 @@ public class Worker extends Thread {
 
     }
 
-    /** Suma los valores de este vector con los de otro (uno a uno).
-     //@param v, el vector con los valores a sumar.
-     * @precondition dimension() == v.dimension().
-     *public void add(SeqVector v) {
-     *  for (int i = 0; i < dimension(); ++i)
-     *       set(i, get(i) + v.get(i));
-     *   }
-     **/
     private void add(Task ttp) {
 
 
@@ -62,13 +54,11 @@ public class Worker extends Thread {
 
 
     public void run(){
-//        while (!this.bafer.isEmpty()){  // o directamente TRUE  ??
-            Task taskBusy = this.bafer.dequeue();
-            processTask(taskBusy);
-            //  aca tenemos que procesar la tarea, no se si con el strategy q hablamos o algo asi..
-            //this.tasksFinalized.addTask(taskBusy);
-            taskBusy.done();
-        }
+        //while (!this.bafer.isEmpty()){  // o directamente TRUE  ??
+        Task taskBusy = this.bafer.dequeue();
+        processTask(taskBusy);
+        //  aca tenemos que procesar la tarea, no se si con el strategy q hablamos o algo asi..
+        this.tasksFinalized.addTask(taskBusy);
     }
 
 

@@ -8,10 +8,6 @@ import java.util.List;
 public class Task {
 
 
-    public void done() {
-        completed = true;
-    }
-
     public enum Operation {
         ADD, SUM, MUL, ABS, MEAN, PROD, NORM
     }
@@ -19,17 +15,15 @@ public class Task {
 
     private double value;
     public Operation operation;
-    private double[] originalVector;
-    private double[] otherVector;
+    private SeqVector originalVector;
+    private SeqVector otherVector;
     private  List<Integer> indexes;
     private int position;
-    private boolean completed = false;
-
 
     public Task(){}
 
 
-    public Task(double value, Operation operation, double[] originalVector, double[] otherVector, List<Integer> indexes, int position){
+    public Task(double value, Operation operation, SeqVector originalVector, SeqVector otherVector, List<Integer> indexes, int position){
         this.value = value;
         this.operation = operation;
         this.originalVector = originalVector;
@@ -39,7 +33,7 @@ public class Task {
     }
 
 
-    public Task(double[] originalVector, List<Integer> indexes){
+    public Task(SeqVector originalVector, List<Integer> indexes){
         this.originalVector = originalVector;
         this.indexes = indexes;
     }
