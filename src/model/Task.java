@@ -7,9 +7,8 @@ import java.util.List;
  */
 public class Task {
 
-
     public enum Operation {
-        ADD, SUM, MUL, ABS, MEAN, PROD, NORM
+        SET, ADD, SUM, MUL, ABS, MEAN, PROD, NORM
     }
 
 
@@ -23,15 +22,14 @@ public class Task {
     public Task(){}
 
 
-    public Task(double value, Operation operation, SeqVector originalVector, SeqVector otherVector, List<Integer> indexes, int position){
-        this.value = value;
+    public Task(/*double value,*/ Operation operation, SeqVector originalVector, int position){
+        // this.value = value;
         this.operation = operation;
         this.originalVector = originalVector;
-        this.otherVector = otherVector;
-        this.indexes = indexes;
+        //this.otherVector = otherVector;
+        //this.indexes = indexes;
         this.position = position;
     }
-
 
     public Task(SeqVector originalVector, List<Integer> indexes){
         this.originalVector = originalVector;
@@ -44,6 +42,47 @@ public class Task {
         return this.value;
     }
 
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public void setOtherVector(SeqVector otherVector) {
+        this.otherVector = otherVector;
+    }
+
+    public SeqVector getOriginalVector() {
+        return originalVector;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+
+    public void set() {
+        originalVector.set(value);
+    }
+
+    public void add() {
+    }
+
+    public void sum() {
+    }
+
+    public void mul() {
+    }
+
+    public void abs() {
+    }
+
+    public void mean() {
+    }
+
+    public void norm() {
+    }
+
+    public void prod() {
+    }
 
 
 }

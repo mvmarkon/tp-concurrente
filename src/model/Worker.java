@@ -17,40 +17,27 @@ public class Worker extends Thread {
     private void processTask( Task ttp) {
         Operation opt= ttp.operation;
         switch (opt) {
+            case SET:
+                ttp.set();
             case ADD:
-                add(ttp);
+                ttp.add();
             case SUM:
-                sum(ttp);
+                ttp.sum();
             case MUL:
-                mul(ttp);
+                ttp.mul();
             case ABS:
-                abs(ttp);
+                ttp.abs();
             case MEAN:
-                mean(ttp);
+                ttp.mean();
             case NORM:
-                norm(ttp);
+                ttp.norm();
             case PROD:
-                prod(ttp);
+                ttp.prod();
         }
 
     }
 
-    private void add(Task ttp) {
 
-
-    }
-    private void sum(Task ttp) {
-    }
-    private void mul(Task ttp) {
-    }
-    private void abs(Task ttp) {
-    }
-    private void mean(Task ttp) {
-    }
-    private void norm(Task ttp) {
-    }
-    private void prod(Task ttp) {
-    }
 
 
     public void run(){

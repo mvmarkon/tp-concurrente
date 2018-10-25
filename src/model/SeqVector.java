@@ -7,7 +7,8 @@ public class SeqVector {
 	
 	// El array con los elementos del vector
 	private double[] elements;
-	
+
+	public SeqVector(double[] vec){ elements = vec; }
 	
 	/** Constructor del model.SeqVector.
 	 * @param size, la longitud del vector.

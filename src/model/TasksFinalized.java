@@ -8,16 +8,29 @@ import java.util.List;
  */
 public class TasksFinalized {
 
-
+    private int tasks;
+    private int finishedTasks = 0;
     private List<Task> finalized = new ArrayList<Task>();
 
-
-
-    public synchronized void addTask(Task task){
-        this.finalized.add(task);
-
-
+    public TasksFinalized(int tasks) {
+        this.tasks = tasks;
     }
 
+    public void addTask(Task task){
+        finishedTasks++;
+        finalized.set(task.getPosition(), task);
+        notify();
+    }
 
+    public synchronized void allTaskCompleted() {
+        while ( finishedTasks < tasks) {
+            try { wait(); }
+            catch (InterruptedException e) {}
+        }
+        finishedTasks = 0;
+    }
+
+    public List<Task> getFinalized() {
+        return finalized;
+    }
 }
