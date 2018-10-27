@@ -61,13 +61,14 @@ public class ConcurVector extends SeqVector{
      * @param d, el valor a ser asignado. */
     public void set(double d) {
         System.out.println("SET");
+        int offset = 0;
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){
-                /*Task t = new Task(Operation.SET, splitElements(i, balancedData[i]), i);*/
-                Task t = new Task(Operation.SET, new SeqVector(balancedData[i]), i);
+                Task t = new Task(Operation.SET, splitElements(offset, offset + balancedData[i]), i);
                 t.setValue(d);
                 buf.queue(t);
             }
+            offset += balancedData[i];
         }
         finalized.allTaskCompleted();
         makeResultVector();
@@ -76,8 +77,20 @@ public class ConcurVector extends SeqVector{
     private void makeResultVector() {
         int offset = 0;
         for (Task ts: finalized.getFinalized()) {
+            for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
+                System.out.println("Tarea  nro: "+ ts.getPosition());
+                elements[ti+offset] = ts.getOriginalVector().get(ti);
+                System.out.println("ti+offset : "+ ti +" + " + offset);
+                System.out.println("ts.getOriginalVector().get(ti)" + ts.getOriginalVector().get(ti));
+
+            }
             offset += ts.getOriginalVector().dimension();
-            processTask(ts, offset);
+        }
+        int cont = 0;
+        for (double n: elements ) {
+
+            System.out.println("Posicion "+ cont+ " contiene: " + n);
+            cont++;
         }
     }
 
