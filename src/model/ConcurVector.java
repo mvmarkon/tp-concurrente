@@ -56,7 +56,7 @@ public class ConcurVector extends SeqVector{
     public SeqVector splitElements(int start, int end){
         return new SeqVector(Arrays.copyOfRange(elements, start, end));
     }
-
+    @Override
     /** Pone el valor d en todas las posiciones del vector.
      * @param d, el valor a ser asignado. */
     public void set(double d) {
@@ -78,20 +78,24 @@ public class ConcurVector extends SeqVector{
         int offset = 0;
         for (Task ts: finalized.getFinalized()) {
             for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
-                System.out.println("Tarea  nro: "+ ts.getPosition());
-                elements[ti+offset] = ts.getOriginalVector().get(ti);
-                System.out.println("ti+offset : "+ ti +" + " + offset);
-                System.out.println("ts.getOriginalVector().get(ti)" + ts.getOriginalVector().get(ti));
+                //System.out.println("Tarea  nro: " + ts.getPosition());
+                elements[ti + offset] = ts.getOriginalVector().get(ti);
+                //System.out.println("ti+offset : " + ti + " + " + offset);
+                //System.out.println("ts.getOriginalVector().get(ti)" + ts.getOriginalVector().get(ti));
 
             }
             offset += ts.getOriginalVector().dimension();
         }
+    }
+    public void verlindo() {
         int cont = 0;
+        System.out.print("[ ");
         for (double n: elements ) {
 
-            System.out.println("Posicion "+ cont+ " contiene: " + n);
+            System.out.print(n + ", ");
             cont++;
         }
+        System.out.print("]");
     }
 
     /*private void processTask(Task ts) {
@@ -108,8 +112,19 @@ public class ConcurVector extends SeqVector{
     /** Suma los valores de este vector con los de otro (uno a uno).
      * @param v, el vector con los valores a sumar.
      * @precondition dimension() == v.dimension(). */
+    @Override
     public void add(SeqVector v) {
-        for (int i = 0; i < dimension(); ++i)
-            set(i, get(i) + v.get(i));
+        System.out.println("ADD");
+        int offset = 0;
+        for (int i = 0; i < balancedData.length; i++){
+            if (balancedData[i] > 0){
+                Task t = new Task(Operation.ADD, splitElements(offset, offset + balancedData[i]), i);
+                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
+                buf.queue(t);
+            }
+            offset += balancedData[i];
+        }
+        finalized.allTaskCompleted();
+        makeResultVector();
     }
 }

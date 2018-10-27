@@ -19,20 +19,28 @@ public class Worker extends Thread {
         switch (opt) {
             case SET:
                 ttp.set();
+                break;
             case ADD:
                 ttp.add();
+                break;
             case SUM:
                 ttp.sum();
+                break;
             case MUL:
                 ttp.mul();
+                break;
             case ABS:
                 ttp.abs();
+                break;
             case MEAN:
                 ttp.mean();
+                break;
             case NORM:
                 ttp.norm();
+                break;
             case PROD:
                 ttp.prod();
+                break;
         }
 
     }
@@ -41,11 +49,12 @@ public class Worker extends Thread {
 
 
     public void run(){
-        //while (!this.bafer.isEmpty()){  // o directamente TRUE  ??
-        Task taskBusy = this.bafer.dequeue();
-        processTask(taskBusy);
-        //  aca tenemos que procesar la tarea, no se si con el strategy q hablamos o algo asi..
-        this.tasksFinalized.addTask(taskBusy);
+        while(true) {        //while (!this.bafer.isEmpty()){  // o directamente TRUE  ??
+            Task taskBusy = this.bafer.dequeue();
+            processTask(taskBusy);
+            //  aca tenemos que procesar la tarea, no se si con el strategy q hablamos o algo asi..
+            this.tasksFinalized.addTask(taskBusy);
+        }
     }
 
 

@@ -64,6 +64,7 @@ public class Task {
     }
 
     public void add() {
+        originalVector.add(otherVector);
     }
 
     public void sum() {

@@ -1,21 +1,30 @@
 import model.ConcurVector;
+import model.SeqVector;
 import model.ThreadPool;
 
 public class Main {
 
     public static void main(String[] args) {
-        //Bafer cola = new Bafer(5);
+        /*Bafer cola = new Bafer(5);
 
-        //System.out.println("Se creo una colasincornizazda de " + cola.getSize() + " espacios");
+        System.out.println("Se creo una colasincornizazda de " + cola.getSize() + " espacios");
+        Task t1 = new Task();
+        Task t2 = new Task();
+        Task t3 = new Task();
+        Task t4 = new Task();
+        Task t5 = new Task();
 
-        /*
-        cola.queue(1.0);
-        cola.queue(2.0);
-        cola.queue(3.0);
-        cola.queue(4.0);
-        cola.queue(5.0);
-*/
-        /*System.out.println("La cola deberia estar llena");
+        System.out.println("La cola NO deberia estar llena");
+        System.out.println(cola.isFull());
+
+        cola.queue(t1);
+        cola.queue(t2);
+        cola.queue(t3);
+        cola.queue(t4);
+        cola.queue(t5);
+
+        System.out.println("La cola deberia estar llena");
+        System.out.println(cola.isFull());
         System.out.println("Se empieza a desencolar: ");
 
         System.out.println("primero: " + cola.dequeue());
@@ -23,7 +32,11 @@ public class Main {
         System.out.println("tercero: " + cola.dequeue());
         System.out.println("cuarto: " + cola.dequeue());
         System.out.println("quinto: " + cola.dequeue());
-*/
+
+        System.out.println("La cola deberia estar vacia");
+        System.out.println(cola.isEmpty());
+        System.out.println("La cola NO deberia estar llena");
+        System.out.println(cola.isFull());*/
         /*ConcurVector cv = new ConcurVector(11, 6);
         //cv.balanceElements();
         double val = 1;
@@ -55,6 +68,13 @@ public class Main {
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
         cv.set(0.2);
+        cv.verlindo();
+
+        SeqVector sv = new SeqVector(11);
+        sv.set(0.8);
+
+        cv.add(sv);
+        cv.verlindo();
 
     }
 }

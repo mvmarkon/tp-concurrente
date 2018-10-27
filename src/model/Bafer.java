@@ -26,6 +26,7 @@ public class Bafer {
             }
         }
         this.data[this.end] = task;
+        System.out.println("QUEUED TASK:" + task.operation + ", ID "+task.getPosition());
         this.end  = next(this.end);
         notifyAll ();
     }
@@ -40,7 +41,8 @@ public class Bafer {
             }
         }
         Task result = this.data [this.begin];
-        System.out.println("DEQUEUED Task"+ result.getPosition());
+        //this.data [this.begin] = null;
+        System.out.println("DEQUEUED Task"+ result.operation + ", ID: " +result.getPosition());
         this.begin = next(this.begin);
         notifyAll ();
         return result ;
@@ -48,5 +50,16 @@ public class Bafer {
 
     public boolean isEmpty () { return this.begin == this.end ; }
     public boolean isFull () { return this.end == this.size; }
-    public int next ( int i) { return (i + 1); }
+    public int next ( int i) { return (i+1)%(this.size); }
+
+    /*public static void main(String[] args) {
+
+        int size = 5;
+        for (int i = 0; i < 11; i++) {
+            int n = ((i+1)%(size));
+            System.out.println( " en " + i + " da " +  n);
+
+        }
+    }
+*/
 }
