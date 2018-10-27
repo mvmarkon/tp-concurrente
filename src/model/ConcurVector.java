@@ -74,10 +74,21 @@ public class ConcurVector extends SeqVector{
     }
 
     private void makeResultVector() {
+        int offset = 0;
         for (Task ts: finalized.getFinalized()) {
-            for (int ti = ts.getPosition(); ti < ts.getOriginalVector().dimension()+ts.getPosition(); ti++) {
-                elements[ti+ts.getPosition()] = ts.getOriginalVector().get(ti);
-            }
+            offset += ts.getOriginalVector().dimension();
+            processTask(ts, offset);
+        }
+    }
+
+    /*private void processTask(Task ts) {
+        for (int ti = ts.getPosition(); ti < ts.getOriginalVector().dimension()+ts.getPosition(); ti++) {
+            elements[ti+ts.getPosition()] = ts.getOriginalVector().get(ti);
+        }
+    }*/
+    private void processTask(Task ts, int offset) {
+        for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
+            elements[ti+offset] = ts.getOriginalVector().get(ti);
         }
     }
 
