@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by mariano on 24/10/18.
  */
@@ -10,15 +7,16 @@ public class TasksFinalized {
 
     private int tasks;
     private int finishedTasks = 0;
-    private List<Task> finalized = new ArrayList<Task>();
+    private Task[] finalized;
 
     public TasksFinalized(int tasks) {
         this.tasks = tasks;
+        finalized = new Task[tasks];
     }
 
-    public void addTask(Task task){
+    public synchronized void addTask(Task task){
         finishedTasks++;
-        finalized.set(task.getPosition(), task);
+        finalized[task.getPosition()] = task;
         notify();
     }
 
@@ -30,7 +28,7 @@ public class TasksFinalized {
         finishedTasks = 0;
     }
 
-    public List<Task> getFinalized() {
+    public Task[] getFinalized() {
         return finalized;
     }
 }

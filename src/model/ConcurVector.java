@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class ConcurVector extends SeqVector{
 
-    private double[] elements;
+    //private double[] elements;
     int dimension;
     int threads;
     Bafer buf;
@@ -23,6 +23,13 @@ public class ConcurVector extends SeqVector{
         finalized = new TasksFinalized(loadedTask);
     }
 
+    public Bafer getBuf() {
+        return buf;
+    }
+
+    public TasksFinalized getFinalized() {
+        return finalized;
+    }
 
     public void setBalancedData(int[] balance){
         this.balancedData = balance;
@@ -53,9 +60,11 @@ public class ConcurVector extends SeqVector{
     /** Pone el valor d en todas las posiciones del vector.
      * @param d, el valor a ser asignado. */
     public void set(double d) {
+        System.out.println("SET");
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){
-                Task t = new Task(Operation.SET, splitElements(i, balancedData[i]), i);
+                /*Task t = new Task(Operation.SET, splitElements(i, balancedData[i]), i);*/
+                Task t = new Task(Operation.SET, new SeqVector(balancedData[i]), i);
                 t.setValue(d);
                 buf.queue(t);
             }
@@ -69,10 +78,6 @@ public class ConcurVector extends SeqVector{
             for (int ti = ts.getPosition(); ti < ts.getOriginalVector().dimension()+ts.getPosition(); ti++) {
                 elements[ti+ts.getPosition()] = ts.getOriginalVector().get(ti);
             }
-            //ts.getOriginalVector()
-//            for (int i = 0; i < elements.length ; i++) {
-  //              this.elements[i] = ts.getOriginalVector().get(i-ts.getPosition());
-    //        }
         }
     }
 

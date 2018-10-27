@@ -40,6 +40,7 @@ public class Bafer {
             }
         }
         Task result = this.data [this.begin];
+        System.out.println("DEQUEUED Task"+ result.getPosition());
         this.begin = next(this.begin);
         notifyAll ();
         return result ;
