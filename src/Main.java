@@ -67,14 +67,29 @@ public class Main {
 
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
+        // prueba para SET
         cv.set(0.2);
         cv.verlindo();
 
         SeqVector sv = new SeqVector(11);
         sv.set(0.8);
 
-        cv.add(sv);
+        // prueba para ADD
+        //cv.add(sv);
+
+        // prueba para ASSIGN
+        //cv.assign(sv);
+        //cv.verlindo();
+
+        //  prueba para ASSIGN con MASK
+        SeqVector mask = new SeqVector(11);
+        //mask.set(0);
+        mask.set(-1);
+        mask.set(0, 7);
+        mask.set(1, 7);
+        cv.assign(mask, sv);
         cv.verlindo();
+
 
     }
 }

@@ -18,10 +18,11 @@ public class ConcurVector extends SeqVector{
         super(dim);
         this.dimension = dim;
         this.threads = threads;
-        this.balance(dim, threads);
-        buf = new Bafer(loadedTask);
-        finalized = new TasksFinalized(loadedTask);
+        this.balancedData = this.balance(dim, threads);
+        this.buf = new Bafer(loadedTask);
+        this.finalized = new TasksFinalized(loadedTask);
     }
+
 
     public Bafer getBuf() {
         return buf;
@@ -36,7 +37,7 @@ public class ConcurVector extends SeqVector{
     }
 
 
-    public void balance(int dimension, int threads) {
+    public int[] balance(int dimension, int threads) {
         int carga = (dimension / threads);
         int[] arrayThreads = new int[threads];
         for (int i = 0; i < arrayThreads.length; i++) {
@@ -50,12 +51,16 @@ public class ConcurVector extends SeqVector{
             if (load > 0)
                 loadedTask++;
         }
-        this.setBalancedData(arrayThreads);
+        //this.setBalancedData(arrayThreads);
+        return arrayThreads;
     }
+
 
     public SeqVector splitElements(int start, int end){
         return new SeqVector(Arrays.copyOfRange(elements, start, end));
     }
+
+
     @Override
     /** Pone el valor d en todas las posiciones del vector.
      * @param d, el valor a ser asignado. */
@@ -74,6 +79,7 @@ public class ConcurVector extends SeqVector{
         makeResultVector();
     }
 
+
     private void makeResultVector() {
         int offset = 0;
         for (Task ts: finalized.getFinalized()) {
@@ -87,6 +93,8 @@ public class ConcurVector extends SeqVector{
             offset += ts.getOriginalVector().dimension();
         }
     }
+
+
     public void verlindo() {
         int cont = 0;
         System.out.print("[ ");
@@ -98,16 +106,13 @@ public class ConcurVector extends SeqVector{
         System.out.print("]");
     }
 
-    /*private void processTask(Task ts) {
-        for (int ti = ts.getPosition(); ti < ts.getOriginalVector().dimension()+ts.getPosition(); ti++) {
-            elements[ti+ts.getPosition()] = ts.getOriginalVector().get(ti);
-        }
-    }*/
+
     private void processTask(Task ts, int offset) {
         for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
             elements[ti+offset] = ts.getOriginalVector().get(ti);
         }
     }
+
 
     /** Suma los valores de este vector con los de otro (uno a uno).
      * @param v, el vector con los valores a sumar.
@@ -127,4 +132,60 @@ public class ConcurVector extends SeqVector{
         finalized.allTaskCompleted();
         makeResultVector();
     }
+
+
+
+
+    /**
+     *  REIMPLEMENTACION DE LOS METODOS DE SEQ_VECTOR
+     */
+
+
+
+
+    /** Copia los valores de otro vector sobre este vector.
+     * @param v, el vector del que se tomaran los valores nuevos.
+     * @precondition dimension() == v.dimension(). */
+    public void assign(SeqVector v) {
+        System.out.println("ASSIGN simple");
+        int offset = 0;
+        for (int i = 0; i < balancedData.length; i++){
+            if (balancedData[i] > 0){
+                Task t = new Task(Operation.ASSIGN, splitElements(offset, offset + balancedData[i]), i);
+                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
+                buf.queue(t);
+            }
+            offset += balancedData[i];
+        }
+        finalized.allTaskCompleted();
+        makeResultVector();
+    }
+
+
+
+    /** Copia algunos valores de otro vector sobre este vector.
+     * Un vector mascara indica cuales valores deben copiarse.
+     * @param mask, vector que determina si una posicion se debe copiar.
+     * @param v, el vector del que se tomaran los valores nuevos.
+     * @precondition dimension() == mask.dimension() && dimension() == v.dimension(). */
+    public void assign(SeqVector mask, SeqVector v) {
+        System.out.println("ASSIGN with mask");
+        int offset = 0;
+        for (int i = 0; i < balancedData.length; i++){
+            if (balancedData[i] > 0){
+                Task t = new Task(Operation.ASSIGN_MASK, splitElements(offset, offset + balancedData[i]), i);
+                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
+                t.setAuxVector(new SeqVector(Arrays.copyOfRange(mask.elements, offset, offset + balancedData[i])));
+                buf.queue(t);
+            }
+            offset += balancedData[i];
+        }
+        finalized.allTaskCompleted();
+        makeResultVector();
+    }
+
+
+
+
+
 }

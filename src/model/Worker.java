@@ -15,7 +15,7 @@ public class Worker extends Thread {
     }
 
     private void processTask( Task ttp) {
-        Operation opt= ttp.operation;
+        Operation opt = ttp.operation;
         switch (opt) {
             case SET:
                 ttp.set();
@@ -40,6 +40,12 @@ public class Worker extends Thread {
                 break;
             case PROD:
                 ttp.prod();
+                break;
+            case ASSIGN:
+                ttp.assign();
+                break;
+            case ASSIGN_MASK:
+                ttp.assignWithMask();
                 break;
         }
 
