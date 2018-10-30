@@ -151,8 +151,6 @@ public class ConcurVector extends SeqVector{
 
 
 
-
-
     /** Copia algunos valores de otro vector sobre este vector.
      * Un vector mascara indica cuales valores deben copiarse.
      * @param mask, vector que determina si una posicion se debe copiar.
@@ -177,10 +175,12 @@ public class ConcurVector extends SeqVector{
         this.makeResultVector();
     }
 
-
-
-
-
+    /** Obtiene el valor absoluto de cada elemento del vector. */
+    public void abs() {
+        this.organizeTasks(Operation.ABS);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
 
 
     //   organizadores de tareas
@@ -212,6 +212,17 @@ public class ConcurVector extends SeqVector{
 
     }
 
+    private void organizeTasks(Operation operation){
+        int offset = 0;
+        for (int i = 0; i < balancedData.length; i++){
+            if (balancedData[i] > 0){
+                Task t = new Task(operation, splitElements(offset, offset + balancedData[i]), i);
+                buf.queue(t);
+            }
+            offset += balancedData[i];
+        }
+
+    }
 
 
 

@@ -82,6 +82,7 @@ public class Task {
     }
 
     public void abs() {
+        this.originalVector.abs();
     }
 
     public void mean() {
