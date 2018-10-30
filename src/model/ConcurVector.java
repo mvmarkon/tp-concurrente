@@ -23,6 +23,15 @@ public class ConcurVector extends SeqVector{
         this.finalized = new TasksFinalized(loadedTask);
     }
 
+    public ConcurVector seqToConcurVector(double[] sv, int threads) {
+        ConcurVector sec2conc = new ConcurVector(sv.length, threads);
+        sec2conc.elements = sv;
+        return sec2conc;
+    }
+
+    public void setElements(double[] els) {
+        this.elements = els;
+    }
 
     public Bafer getBuf() {
         return buf;
@@ -198,12 +207,16 @@ public class ConcurVector extends SeqVector{
         this.organizeTasks(Operation.SUM);
         this.finalized.allTaskCompleted();
         double[] result = this.makeResult();
-        while(result.length > 1){
-            ConcurVector smallerCV = new ConcurVector(result.length, this.threads);
+        while(result.length > threads){
+            ConcurVector smallerCV = seqToConcurVector(result, threads);
             smallerCV.sum();
             result = smallerCV.elements;
         }
-        return result[0];
+        double sum = 0;
+        for (double n: result) {
+            sum += n;
+        }
+        return sum;
     }
 
 

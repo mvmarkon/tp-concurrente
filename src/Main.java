@@ -67,7 +67,9 @@ public class Main {
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
         // prueba para SET
-        cv.set(2);
+        //cv.set(2);
+        double[] el = {0.2, 0.2};
+        cv.setElements(el);
         cv.verlindo();
 
         //SeqVector sv = new SeqVector(11);
@@ -100,7 +102,7 @@ public class Main {
 
 
         // SIEMPRE SE MUESTRA AL FINAL CONCUR VECTOR
-        cv.verlindo();
+        //cv.verlindo();
 
     }
 }
