@@ -61,23 +61,7 @@ public class ConcurVector extends SeqVector{
     }
 
 
-    @Override
-    /** Pone el valor d en todas las posiciones del vector.
-     * @param d, el valor a ser asignado. */
-    public void set(double d) {
-        System.out.println("SET");
-        int offset = 0;
-        for (int i = 0; i < balancedData.length; i++){
-            if (balancedData[i] > 0){
-                Task t = new Task(Operation.SET, splitElements(offset, offset + balancedData[i]), i);
-                t.setValue(d);
-                buf.queue(t);
-            }
-            offset += balancedData[i];
-        }
-        finalized.allTaskCompleted();
-        makeResultVector();
-    }
+
 
 
     private void makeResultVector() {
@@ -124,6 +108,18 @@ public class ConcurVector extends SeqVector{
 
 
 
+    /** Pone el valor d en todas las posiciones del vector.
+     * @param d, el valor a ser asignado. */
+    @Override
+    public void set(double d) {
+        System.out.println("SET");
+        this.organizeTasks(d, Operation.SET);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
+
+
+
     /** Suma los valores de este vector con los de otro (uno a uno).
      * @param v, el vector con los valores a sumar.
      * @precondition dimension() == v.dimension(). */
@@ -142,6 +138,7 @@ public class ConcurVector extends SeqVector{
     /** Copia los valores de otro vector sobre este vector.
      * @param v, el vector del que se tomaran los valores nuevos.
      * @precondition dimension() == v.dimension(). */
+    @Override
     public void assign(SeqVector v) {
         System.out.println("ASSIGN simple");
         this.organizeTasks(v, Operation.ASSIGN);
@@ -158,6 +155,7 @@ public class ConcurVector extends SeqVector{
      * @param mask, vector que determina si una posicion se debe copiar.
      * @param v, el vector del que se tomaran los valores nuevos.
      * @precondition dimension() == mask.dimension() && dimension() == v.dimension(). */
+    @Override
     public void assign(SeqVector mask, SeqVector v) {
         System.out.println("ASSIGN with mask");
         this.organizeTasks(mask, v, Operation.ASSIGN_MASK);
@@ -171,6 +169,7 @@ public class ConcurVector extends SeqVector{
      *  (uno a uno).
      * @param v, el vector con los valores a multiplicar.
      * @precondition dimension() == v.dimension(). */
+    @Override
     public void mul(SeqVector v) {
         this.organizeTasks(v, Operation.MUL);
         this.finalized.allTaskCompleted();
@@ -179,11 +178,47 @@ public class ConcurVector extends SeqVector{
 
 
 
+    /** Obtiene el valor absoluto de cada elemento del vector. */
+    @Override
+    public void abs() {
+        this.organizeTasks(Operation.ABS);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
+
 
 
 
 
     //   organizadores de tareas
+
+
+    private void organizeTasks(double d, Operation operation){
+        int offset = 0;
+        for (int i = 0; i < balancedData.length; i++){
+            if (balancedData[i] > 0){
+                Task t = new Task(operation, splitElements(offset, offset + balancedData[i]), i);
+                t.setValue(d);
+                buf.queue(t);
+            }
+            offset += balancedData[i];
+        }
+
+    }
+
+
+
+    private void organizeTasks(Operation operation){
+        int offset = 0;
+        for (int i = 0; i < this.balancedData.length; i++){
+            if (this.balancedData[i] > 0){
+                Task t = new Task(operation, splitElements(offset, offset + this.balancedData[i]), i);
+                this.buf.queue(t);
+            }
+            offset += this.balancedData[i];
+        }
+    }
+
 
     private void organizeTasks(SeqVector v, Operation operation){
         int offset = 0;
