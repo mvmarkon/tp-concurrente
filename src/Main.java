@@ -1,5 +1,4 @@
 import model.ConcurVector;
-import model.SeqVector;
 import model.ThreadPool;
 
 public class Main {
@@ -68,23 +67,24 @@ public class Main {
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
         // prueba para SET
-        cv.set(2);
+        cv.set(-2);
         cv.verlindo();
 
-        SeqVector sv = new SeqVector(11);
-        sv.set(2);
+        //SeqVector sv = new SeqVector(11);
+        //sv.set(2);
 
         // prueba para ADD
         //cv.add(sv);
 
         // prueba para ASSIGN
         //cv.assign(sv);
-        //cv.verlindo();
 
         // prueba para MUL
-        cv.mul(sv);
-        cv.verlindo();
+        //cv.mul(sv);
 
+        //Prueba de ABS
+
+        cv.abs();
 
 /*
         //  prueba para ASSIGN con MASK
@@ -94,11 +94,11 @@ public class Main {
         mask.set(0, 7);
         mask.set(1, 7);
         cv.assign(mask, sv);
-        cv.verlindo();
 */
 
 
-
+        // SIEMPRE SE MUESTRA AL FINAL CONCUR VECTOR
+        cv.verlindo();
 
     }
 }
