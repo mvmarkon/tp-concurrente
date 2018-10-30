@@ -109,29 +109,11 @@ public class ConcurVector extends SeqVector{
 
     private void processTask(Task ts, int offset) {
         for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
-            elements[ti+offset] = ts.getOriginalVector().get(ti);
+            this.elements[ti+offset] = ts.getOriginalVector().get(ti);
         }
     }
 
 
-    /** Suma los valores de este vector con los de otro (uno a uno).
-     * @param v, el vector con los valores a sumar.
-     * @precondition dimension() == v.dimension(). */
-    @Override
-    public void add(SeqVector v) {
-        System.out.println("ADD");
-        int offset = 0;
-        for (int i = 0; i < balancedData.length; i++){
-            if (balancedData[i] > 0){
-                Task t = new Task(Operation.ADD, splitElements(offset, offset + balancedData[i]), i);
-                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
-                buf.queue(t);
-            }
-            offset += balancedData[i];
-        }
-        finalized.allTaskCompleted();
-        makeResultVector();
-    }
 
 
 
@@ -142,24 +124,32 @@ public class ConcurVector extends SeqVector{
 
 
 
+    /** Suma los valores de este vector con los de otro (uno a uno).
+     * @param v, el vector con los valores a sumar.
+     * @precondition dimension() == v.dimension(). */
+    @Override
+    public void add(SeqVector v) {
+        System.out.println("ADD");
+        this.organizeTasks(v, Operation.ADD);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
+
+
+
+
 
     /** Copia los valores de otro vector sobre este vector.
      * @param v, el vector del que se tomaran los valores nuevos.
      * @precondition dimension() == v.dimension(). */
     public void assign(SeqVector v) {
         System.out.println("ASSIGN simple");
-        int offset = 0;
-        for (int i = 0; i < balancedData.length; i++){
-            if (balancedData[i] > 0){
-                Task t = new Task(Operation.ASSIGN, splitElements(offset, offset + balancedData[i]), i);
-                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
-                buf.queue(t);
-            }
-            offset += balancedData[i];
-        }
-        finalized.allTaskCompleted();
-        makeResultVector();
+        this.organizeTasks(v, Operation.ASSIGN);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
     }
+
+
 
 
 
@@ -170,18 +160,56 @@ public class ConcurVector extends SeqVector{
      * @precondition dimension() == mask.dimension() && dimension() == v.dimension(). */
     public void assign(SeqVector mask, SeqVector v) {
         System.out.println("ASSIGN with mask");
+        this.organizeTasks(mask, v, Operation.ASSIGN_MASK);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
+
+
+
+    /** Multiplica los valores de este vector con los de otro
+     *  (uno a uno).
+     * @param v, el vector con los valores a multiplicar.
+     * @precondition dimension() == v.dimension(). */
+    public void mul(SeqVector v) {
+        this.organizeTasks(v, Operation.MUL);
+        this.finalized.allTaskCompleted();
+        this.makeResultVector();
+    }
+
+
+
+
+
+
+
+    //   organizadores de tareas
+
+    private void organizeTasks(SeqVector v, Operation operation){
+        int offset = 0;
+        for (int i = 0; i < this.balancedData.length; i++){
+            if (this.balancedData[i] > 0){
+                Task t = new Task(operation, splitElements(offset, offset + this.balancedData[i]), i);
+                t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + this.balancedData[i])));
+                this.buf.queue(t);
+            }
+            offset += this.balancedData[i];
+        }
+    }
+
+
+    private void organizeTasks(SeqVector mask, SeqVector v, Operation operation){
         int offset = 0;
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){
-                Task t = new Task(Operation.ASSIGN_MASK, splitElements(offset, offset + balancedData[i]), i);
+                Task t = new Task(operation, splitElements(offset, offset + balancedData[i]), i);
                 t.setOtherVector(new SeqVector(Arrays.copyOfRange(v.elements, offset, offset + balancedData[i])));
                 t.setAuxVector(new SeqVector(Arrays.copyOfRange(mask.elements, offset, offset + balancedData[i])));
                 buf.queue(t);
             }
             offset += balancedData[i];
         }
-        finalized.allTaskCompleted();
-        makeResultVector();
+
     }
 
 

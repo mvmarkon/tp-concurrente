@@ -68,11 +68,11 @@ public class Main {
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
         // prueba para SET
-        cv.set(0.2);
+        cv.set(2);
         cv.verlindo();
 
         SeqVector sv = new SeqVector(11);
-        sv.set(0.8);
+        sv.set(2);
 
         // prueba para ADD
         //cv.add(sv);
@@ -81,6 +81,12 @@ public class Main {
         //cv.assign(sv);
         //cv.verlindo();
 
+        // prueba para MUL
+        cv.mul(sv);
+        cv.verlindo();
+
+
+/*
         //  prueba para ASSIGN con MASK
         SeqVector mask = new SeqVector(11);
         //mask.set(0);
@@ -89,6 +95,9 @@ public class Main {
         mask.set(1, 7);
         cv.assign(mask, sv);
         cv.verlindo();
+*/
+
+
 
 
     }

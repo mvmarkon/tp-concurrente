@@ -78,6 +78,7 @@ public class Task {
     }
 
     public void mul() {
+        this.originalVector.mul(this.otherVector);
     }
 
     public void abs() {

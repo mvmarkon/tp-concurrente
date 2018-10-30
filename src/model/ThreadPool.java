@@ -18,7 +18,7 @@ public class ThreadPool {
     public void createWorkers(Bafer taskBafer, TasksFinalized completedtasks) {
         for (int i = 0; i < threads; i++) {
             Worker worker = new Worker(taskBafer, completedtasks);
-            workers.add(worker);
+            this.workers.add(worker);
             worker.start();
         }
     }
