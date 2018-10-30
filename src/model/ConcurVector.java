@@ -201,6 +201,7 @@ public class ConcurVector extends SeqVector{
         while(result.length > 1){
             ConcurVector smallerCV = new ConcurVector(result.length, this.threads);
             smallerCV.sum();
+            result = smallerCV.elements;
         }
         return result[0];
     }
