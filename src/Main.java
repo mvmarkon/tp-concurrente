@@ -59,15 +59,15 @@ public class Main {
             System.out.println(cv.get(i));
         }
 */
-        int threads = 5;
-        int dimension = 11;
-        ThreadPool tp = new ThreadPool(threads, 5);
+        int threads = 2;
+        int dimension = 4;
+        ThreadPool tp = new ThreadPool(threads);
         ConcurVector cv = new ConcurVector(dimension, threads);
 
         tp.createWorkers(cv.getBuf(), cv.getFinalized());
 
         // prueba para SET
-        cv.set(-2);
+        cv.set(2);
         cv.verlindo();
 
         //SeqVector sv = new SeqVector(11);
@@ -84,8 +84,10 @@ public class Main {
 
         //Prueba de ABS
 
-        cv.abs();
+        //cv.abs();
 
+        //PRUEBA DE SUM
+        System.out.println("SUMAAAAAAAA" + cv.sum());
 /*
         //  prueba para ASSIGN con MASK
         SeqVector mask = new SeqVector(11);

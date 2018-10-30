@@ -77,6 +77,13 @@ public class ConcurVector extends SeqVector{
             offset += ts.getOriginalVector().dimension();
         }
     }
+    private double[] makeResult() {
+        double[] resultElements = new double[finalized.getFinalized().length];
+        for (Task ts: finalized.getFinalized()) {
+            resultElements[ts.getPosition()] = ts.getResult();
+        }
+        return resultElements;
+    }
 
 
     public void verlindo() {
@@ -184,6 +191,18 @@ public class ConcurVector extends SeqVector{
         this.organizeTasks(Operation.ABS);
         this.finalized.allTaskCompleted();
         this.makeResultVector();
+    }
+
+    /** Obtiene la suma de todos los valores del vector. */
+    public double sum() {
+        this.organizeTasks(Operation.SUM);
+        this.finalized.allTaskCompleted();
+        double[] result = this.makeResult();
+        while(result.length > 1){
+            ConcurVector smallerCV = new ConcurVector(result.length, this.threads);
+            smallerCV.sum();
+        }
+        return result[0];
     }
 
 

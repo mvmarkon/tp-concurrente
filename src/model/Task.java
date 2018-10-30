@@ -19,6 +19,7 @@ public class Task {
     private  List<Integer> indexes;
     private int position;
     private SeqVector auxVector;
+    private double result;
 
 
     public Task(){}
@@ -39,6 +40,13 @@ public class Task {
     }
 
 
+    public double getResult() {
+        return result;
+    }
+
+    public void setResult(double res) {
+        this.result = res;
+    }
 
     public void setAuxVector(SeqVector auxVector){
         this.auxVector = auxVector;
@@ -75,6 +83,7 @@ public class Task {
     }
 
     public void sum() {
+        this.setResult(this.originalVector.sum());
     }
 
     public void mul() {

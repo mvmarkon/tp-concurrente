@@ -10,9 +10,8 @@ public class ThreadPool {
     private List<Worker> workers = new ArrayList<>();
 
 
-    public ThreadPool(int threads, int load){
+    public ThreadPool(int threads){
         this.threads = threads;
-        this.load = load;
     }
 
     public void createWorkers(Bafer taskBafer, TasksFinalized completedtasks) {
