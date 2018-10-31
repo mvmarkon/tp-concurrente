@@ -210,9 +210,9 @@ public class ConcurVector {
      * de cada coordenada.
      * @param v, el vector a usar para realizar el producto.
      * @precondition dimension() == v.dimension(). */
-    public synchronized double prod(SeqVector v) {
+    public synchronized double prod(ConcurVector v) {
         ConcurVector aux = new ConcurVector(dimension, threads);
-        aux.assign(new SeqVector(this.elements));
+        aux.assign(this);
         aux.mul(v);
         return aux.sum();
     }
@@ -224,13 +224,13 @@ public class ConcurVector {
      */
     public synchronized double norm() {
         ConcurVector aux = new ConcurVector(dimension, threads);
-        aux.assign(new SeqVector(this.elements));
-        aux.mul(new SeqVector(this.elements));
+        aux.assign(this);
+        aux.mul(this);
         return Math.sqrt(aux.sum());
     }
 
     /** Obtiene el valor maximo en el vector. */
-    public synchronized double max() {
+    /*public synchronized double max() {
         this.organizeTasks(Operation.MAX);
         this.finalized.allTaskCompleted();
         double[] result = this.makeResult();
@@ -243,7 +243,7 @@ public class ConcurVector {
         }
         SeqVector rs = new SeqVector(result);
         return rs.max();
-    }
+    }*/
 
 
     //   organizadores de tareas
@@ -289,7 +289,7 @@ public class ConcurVector {
     }
 
 
-    private void organizeTasks(SeqVector mask, SeqVector v, Operation operation){
+    private void organizeTasks(ConcurVector mask, ConcurVector v, Operation operation){
         int offset = 0;
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){
