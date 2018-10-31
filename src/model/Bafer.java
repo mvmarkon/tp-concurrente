@@ -37,16 +37,17 @@ public class Bafer {
     public synchronized Task dequeue () {
         while ( isEmpty ()) {
             try {
+                ver();
                 wait ();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         Task result = this.data [this.begin];
-        //this.data [this.begin] = null;
-        System.out.println("DEQUEUED Task"+ result.operation + ", ID: " +result.getPosition());
         this.begin = next(this.begin);
-        notifyAll ();
+        System.out.print("DEQUEUED");
+        result.ver();
+        notifyAll();
         return result ;
     }
 
@@ -64,4 +65,7 @@ public class Bafer {
         }
     }
 */
+    public synchronized void ver() {
+        System.out.println("BUFER " + begin +" " + end);
+    }
 }

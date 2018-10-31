@@ -57,7 +57,12 @@ public class Worker extends Thread {
 
     public void run(){
         while(true) {
+            ver();
+            System.out.println("Por sacar tarea");
             Task taskBusy = this.bafer.dequeue();
+            ver();
+            System.out.println("Saco tarea");
+            taskBusy.ver();
             this.processTask(taskBusy);
             this.tasksFinalized.addTask(taskBusy);
         }

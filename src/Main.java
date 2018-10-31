@@ -58,9 +58,9 @@ public class Main {
             System.out.println(cv.get(i));
         }
 */
-        int threads = 2;
+        int threads = 3;
         //double[] el = {2,3,5,6,45,2,3,4,5,1};
-        int dimension = 4;
+        int dimension = 6;
 
         ConcurVector cv = new ConcurVector(dimension, threads);
 
@@ -103,7 +103,7 @@ public class Main {
 
 
         // SIEMPRE SE MUESTRA AL FINAL CONCUR VECTOR
-        cv.verlindo();
+        //cv.verlindo();
 
     }
 }

@@ -29,6 +29,7 @@ public class Task {
         this.operation = operation;
         this.originalVector = originalVector;
         this.position = position;
+        System.out.println("Se creo Tarea" + position + " "+ operation);
     }
 
   /*  public Task(SeqVector originalVector, List<Integer> indexes){

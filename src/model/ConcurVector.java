@@ -120,6 +120,7 @@ public class ConcurVector {
         this.organizeTasks(d, Operation.SET);
         this.finalized.allTaskCompleted();
         this.makeResultVector();
+        verlindo();
     }
 
 
