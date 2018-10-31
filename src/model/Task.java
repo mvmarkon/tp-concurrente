@@ -22,22 +22,19 @@ public class Task {
     private double result;
 
 
-    public Task(){}
+//    public Task(){}
 
 
     public Task(Operation operation, SeqVector originalVector, int position){
-        // this.value = value;
         this.operation = operation;
         this.originalVector = originalVector;
-        //this.otherVector = otherVector;
-        //this.indexes = indexes;
         this.position = position;
     }
 
-    public Task(SeqVector originalVector, List<Integer> indexes){
+  /*  public Task(SeqVector originalVector, List<Integer> indexes){
         this.originalVector = originalVector;
         this.indexes = indexes;
-    }
+    }*/
 
 
     public double getResult() {
@@ -98,19 +95,16 @@ public class Task {
         this.setResult(this.originalVector.max());
     }
 
-    public void norm() {
-    }
-
-    public void prod() {
-    }
-
     public void assign(){
         this.originalVector.assign(this.otherVector);
     }
 
-
     public void assignWithMask(){
         this.originalVector.assign(this.auxVector, this.otherVector);
+    }
+
+    public synchronized void ver(){
+        System.out.println("Tarea " + this.position + " de " + this.operation);
     }
 
 }

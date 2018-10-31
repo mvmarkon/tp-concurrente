@@ -6,7 +6,7 @@ public class SeqVector {
 
 	
 	// El array con los elementos del vector
-	protected double[] elements;
+	private double[] elements;
 
 	public SeqVector(double[] vec){ elements = vec; }
 

@@ -21,12 +21,14 @@ public class Bafer {
         while ( isFull ()) {
             try {
                 wait();
+                task.ver();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         this.data[this.end] = task;
-        System.out.println("QUEUED TASK:" + task.operation + ", ID "+task.getPosition());
+        System.out.println("QUEUED TASK: ");
+        task.ver();
         this.end  = next(this.end);
         notifyAll ();
     }
@@ -48,9 +50,9 @@ public class Bafer {
         return result ;
     }
 
-    public boolean isEmpty () { return this.begin == this.end ; }
-    public boolean isFull () { return this.end == this.size; }
-    public int next ( int i) { return (i+1)%(this.size); }
+    public synchronized boolean isEmpty () { return this.begin == this.end ; }
+    public synchronized boolean isFull () { return this.end == this.size; }
+    public synchronized int next ( int i) { return (i+1)%(this.size); }
 
     /*public static void main(String[] args) {
 

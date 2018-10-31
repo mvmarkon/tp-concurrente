@@ -6,12 +6,14 @@ public class Worker extends Thread {
 
     private Bafer bafer;
     private TasksFinalized tasksFinalized;
+    private int id;
 
 
 
-    public Worker(Bafer bafer, TasksFinalized tasksFinalized){
+    public Worker(Bafer bafer, TasksFinalized tasksFinalized, int n){
         this.bafer = bafer;
         this.tasksFinalized = tasksFinalized;
+        this.id = n;
     }
 
     private void processTask( Task ttp) {
@@ -35,9 +37,11 @@ public class Worker extends Thread {
             case MAX:
                 ttp.max();
                 break;
+/*
             case PROD:
                 ttp.prod();
                 break;
+*/
             case ASSIGN:
                 ttp.assign();
                 break;
@@ -52,15 +56,16 @@ public class Worker extends Thread {
 
 
     public void run(){
-        while(true) {        //while (!this.bafer.isEmpty()){  // o directamente TRUE  ??
+        while(true) {
             Task taskBusy = this.bafer.dequeue();
             this.processTask(taskBusy);
-            //  aca tenemos que procesar la tarea, no se si con el strategy q hablamos o algo asi..
             this.tasksFinalized.addTask(taskBusy);
         }
     }
 
-
+    public void ver() {
+        System.out.println("WORKER: " + this.id);
+    }
 
 
 

@@ -21,7 +21,7 @@ public class TasksFinalized {
     }
 
     public synchronized void allTaskCompleted() {
-        while ( finishedTasks < tasks) {
+        while ( finishedTasks != tasks ) {
             try { wait(); }
             catch (InterruptedException e) {}
         }
@@ -29,7 +29,14 @@ public class TasksFinalized {
     }
 
     public synchronized Task[] getFinalized() {
-        notifyAll();
+         while( !(finishedTasks != tasks)) {
+             try {
+                 wait();
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
+         notifyAll();
         return finalized;
     }
 }

@@ -3,50 +3,53 @@ package model;
 import model.Task.Operation;
 import java.util.Arrays;
 
-public class ConcurVector extends SeqVector{
+public class ConcurVector {
 
-    //private double[] elements;
+    private double[] elements;
     int dimension;
     int threads;
     Bafer buf;
     TasksFinalized finalized;
     int[] balancedData;
     int loadedTask;
+    ThreadPool tp;
 
 
     public ConcurVector(int dim, int threads){
-        super(dim);
+        this.elements = new double[dim];
         this.dimension = dim;
         this.threads = threads;
         this.balancedData = this.balance(dim, threads);
         this.buf = new Bafer(loadedTask);
         this.finalized = new TasksFinalized(loadedTask);
+        this.tp = new ThreadPool(threads);
+        tp.createWorkers(this.buf, this.finalized);
     }
 
-    public ConcurVector seqToConcurVector(double[] sv, int threads) {
+    public synchronized ConcurVector seqToConcurVector(double[] sv, int threads) {
         ConcurVector sec2conc = new ConcurVector(sv.length, threads);
         sec2conc.elements = sv;
         return sec2conc;
     }
 
-    public void setElements(double[] els) {
+    public synchronized void setElements(double[] els) {
         this.elements = els;
     }
 
-    public Bafer getBuf() {
+    public synchronized Bafer getBuf() {
         return buf;
     }
 
-    public TasksFinalized getFinalized() {
+    public synchronized TasksFinalized getFinalized() {
         return finalized;
     }
 
-    public void setBalancedData(int[] balance){
+    public synchronized void setBalancedData(int[] balance){
         this.balancedData = balance;
     }
 
 
-    public int[] balance(int dimension, int threads) {
+    private int[] balance(int dimension, int threads) {
         int carga = (dimension / threads);
         int[] arrayThreads = new int[threads];
         for (int i = 0; i < arrayThreads.length; i++) {
@@ -65,7 +68,7 @@ public class ConcurVector extends SeqVector{
     }
 
 
-    public SeqVector splitElements(int start, int end){
+    public synchronized SeqVector splitElements(int start, int end){
         return new SeqVector(Arrays.copyOfRange(elements, start, end));
     }
 
@@ -77,10 +80,7 @@ public class ConcurVector extends SeqVector{
         int offset = 0;
         for (Task ts: finalized.getFinalized()) {
             for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
-                //System.out.println("Tarea  nro: " + ts.getPosition());
                 elements[ti + offset] = ts.getOriginalVector().get(ti);
-                //System.out.println("ti+offset : " + ti + " + " + offset);
-                //System.out.println("ts.getOriginalVector().get(ti)" + ts.getOriginalVector().get(ti));
 
             }
             offset += ts.getOriginalVector().dimension();
@@ -95,26 +95,14 @@ public class ConcurVector extends SeqVector{
     }
 
 
-    public void verlindo() {
-        int cont = 0;
+    public synchronized void verlindo() {
         System.out.print("[ ");
         for (double n: elements ) {
 
             System.out.print(n + ", ");
-            cont++;
         }
         System.out.print("]");
     }
-
-
-    private void processTask(Task ts, int offset) {
-        for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
-            this.elements[ti+offset] = ts.getOriginalVector().get(ti);
-        }
-    }
-
-
-
 
 
 
@@ -126,8 +114,8 @@ public class ConcurVector extends SeqVector{
 
     /** Pone el valor d en todas las posiciones del vector.
      * @param d, el valor a ser asignado. */
-    @Override
-    public void set(double d) {
+
+    public synchronized void set(double d) {
         System.out.println("SET");
         this.organizeTasks(d, Operation.SET);
         this.finalized.allTaskCompleted();
@@ -139,8 +127,7 @@ public class ConcurVector extends SeqVector{
     /** Suma los valores de este vector con los de otro (uno a uno).
      * @param v, el vector con los valores a sumar.
      * @precondition dimension() == v.dimension(). */
-    @Override
-    public void add(SeqVector v) {
+    public synchronized void add(ConcurVector v) {
         System.out.println("ADD");
         this.organizeTasks(v, Operation.ADD);
         this.finalized.allTaskCompleted();
@@ -154,8 +141,7 @@ public class ConcurVector extends SeqVector{
     /** Copia los valores de otro vector sobre este vector.
      * @param v, el vector del que se tomaran los valores nuevos.
      * @precondition dimension() == v.dimension(). */
-    @Override
-    public void assign(SeqVector v) {
+    public synchronized void assign(ConcurVector v) {
         System.out.println("ASSIGN simple");
         this.organizeTasks(v, Operation.ASSIGN);
         this.finalized.allTaskCompleted();
@@ -171,8 +157,7 @@ public class ConcurVector extends SeqVector{
      * @param mask, vector que determina si una posicion se debe copiar.
      * @param v, el vector del que se tomaran los valores nuevos.
      * @precondition dimension() == mask.dimension() && dimension() == v.dimension(). */
-    @Override
-    public void assign(SeqVector mask, SeqVector v) {
+    public synchronized void assign(ConcurVector mask, ConcurVector v) {
         System.out.println("ASSIGN with mask");
         this.organizeTasks(mask, v, Operation.ASSIGN_MASK);
         this.finalized.allTaskCompleted();
@@ -185,8 +170,7 @@ public class ConcurVector extends SeqVector{
      *  (uno a uno).
      * @param v, el vector con los valores a multiplicar.
      * @precondition dimension() == v.dimension(). */
-    @Override
-    public void mul(SeqVector v) {
+    public synchronized void mul(ConcurVector v) {
         this.organizeTasks(v, Operation.MUL);
         this.finalized.allTaskCompleted();
         this.makeResultVector();
@@ -195,15 +179,14 @@ public class ConcurVector extends SeqVector{
 
 
     /** Obtiene el valor absoluto de cada elemento del vector. */
-    @Override
-    public void abs() {
+    public synchronized void abs() {
         this.organizeTasks(Operation.ABS);
         this.finalized.allTaskCompleted();
         this.makeResultVector();
     }
 
     /** Obtiene la suma de todos los valores del vector. */
-    public double sum() {
+    public synchronized double sum() {
         this.organizeTasks(Operation.SUM);
         this.finalized.allTaskCompleted();
         double[] result = this.makeResult();
@@ -217,9 +200,9 @@ public class ConcurVector extends SeqVector{
     }
 
     /** Obtiene el valor promedio en el vector. */
-    public double mean() {
+    public synchronized double mean() {
         double total = sum();
-        return total / dimension();
+        return total / dimension;
     }
 
     /** Retorna el producto de este vector con otro.
@@ -227,8 +210,8 @@ public class ConcurVector extends SeqVector{
      * de cada coordenada.
      * @param v, el vector a usar para realizar el producto.
      * @precondition dimension() == v.dimension(). */
-    public double prod(SeqVector v) {
-        ConcurVector aux = new ConcurVector(dimension(), threads);
+    public synchronized double prod(SeqVector v) {
+        ConcurVector aux = new ConcurVector(dimension, threads);
         aux.assign(new SeqVector(this.elements));
         aux.mul(v);
         return aux.sum();
@@ -239,15 +222,15 @@ public class ConcurVector extends SeqVector{
      *  Recordar que la norma se calcula haciendo la raiz cuadrada de la
      *  suma de los cuadrados de sus coordenadas.
      */
-    public double norm() {
-        ConcurVector aux = new ConcurVector(dimension(), threads);
+    public synchronized double norm() {
+        ConcurVector aux = new ConcurVector(dimension, threads);
         aux.assign(new SeqVector(this.elements));
         aux.mul(new SeqVector(this.elements));
         return Math.sqrt(aux.sum());
     }
 
     /** Obtiene el valor maximo en el vector. */
-    public double max() {
+    public synchronized double max() {
         this.organizeTasks(Operation.MAX);
         this.finalized.allTaskCompleted();
         double[] result = this.makeResult();
@@ -293,7 +276,7 @@ public class ConcurVector extends SeqVector{
     }
 
 
-    private void organizeTasks(SeqVector v, Operation operation){
+    private void organizeTasks(ConcurVector v, Operation operation){
         int offset = 0;
         for (int i = 0; i < this.balancedData.length; i++){
             if (this.balancedData[i] > 0){

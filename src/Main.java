@@ -1,5 +1,4 @@
 import model.ConcurVector;
-import model.ThreadPool;
 
 public class Main {
 
@@ -60,16 +59,14 @@ public class Main {
         }
 */
         int threads = 2;
-        double[] el = {2,3,5,6,45,2,3,4,5,1};
-        int dimension = el.length;
-        ThreadPool tp = new ThreadPool(threads);
+        //double[] el = {2,3,5,6,45,2,3,4,5,1};
+        int dimension = 4;
+
         ConcurVector cv = new ConcurVector(dimension, threads);
 
-        tp.createWorkers(cv.getBuf(), cv.getFinalized());
-
         // prueba para SET
-        //cv.set(2);
-        cv.setElements(el);
+        cv.set(2);
+       // cv.setElements(el);
         //cv.verlindo();
 
         //SeqVector sv = new SeqVector(2);
@@ -92,7 +89,7 @@ public class Main {
         //System.out.println("SUMAAAAAAAA" + cv.sum());
         //System.out.println("MEAN/PROMEDIO" + cv.mean());
         //System.out.println("PROD" + cv.prod(sv));
-        System.out.println("MAX" + cv.max());
+        //System.out.println("MAX" + cv.max());
 
 /*
         //  prueba para ASSIGN con MASK
@@ -106,7 +103,7 @@ public class Main {
 
 
         // SIEMPRE SE MUESTRA AL FINAL CONCUR VECTOR
-        //cv.verlindo();
+        cv.verlindo();
 
     }
 }
