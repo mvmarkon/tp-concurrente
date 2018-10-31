@@ -32,11 +32,8 @@ public class Worker extends Thread {
             case ABS:
                 ttp.abs();
                 break;
-            case MEAN:
-                ttp.mean();
-                break;
-            case NORM:
-                ttp.norm();
+            case MAX:
+                ttp.max();
                 break;
             case PROD:
                 ttp.prod();

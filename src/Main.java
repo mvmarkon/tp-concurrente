@@ -60,7 +60,8 @@ public class Main {
         }
 */
         int threads = 2;
-        int dimension = 4;
+        double[] el = {2,3,5,6,45,2,3,4,5,1};
+        int dimension = el.length;
         ThreadPool tp = new ThreadPool(threads);
         ConcurVector cv = new ConcurVector(dimension, threads);
 
@@ -68,11 +69,10 @@ public class Main {
 
         // prueba para SET
         //cv.set(2);
-        double[] el = {0.2, 0.2};
         cv.setElements(el);
-        cv.verlindo();
+        //cv.verlindo();
 
-        //SeqVector sv = new SeqVector(11);
+        //SeqVector sv = new SeqVector(2);
         //sv.set(2);
 
         // prueba para ADD
@@ -89,7 +89,11 @@ public class Main {
         //cv.abs();
 
         //PRUEBA DE SUM
-        System.out.println("SUMAAAAAAAA" + cv.sum());
+        //System.out.println("SUMAAAAAAAA" + cv.sum());
+        //System.out.println("MEAN/PROMEDIO" + cv.mean());
+        //System.out.println("PROD" + cv.prod(sv));
+        System.out.println("MAX" + cv.max());
+
 /*
         //  prueba para ASSIGN con MASK
         SeqVector mask = new SeqVector(11);

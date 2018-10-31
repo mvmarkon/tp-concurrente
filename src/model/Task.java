@@ -8,7 +8,7 @@ import java.util.List;
 public class Task {
 
     public enum Operation {
-        SET, ADD, SUM, MUL, ABS, MEAN, PROD, NORM, ASSIGN, ASSIGN_MASK
+        SET, ADD, SUM, MUL, ABS, MAX, PROD, NORM, ASSIGN, ASSIGN_MASK
     }
 
 
@@ -94,7 +94,8 @@ public class Task {
         this.originalVector.abs();
     }
 
-    public void mean() {
+    public void max() {
+        this.setResult(this.originalVector.max());
     }
 
     public void norm() {

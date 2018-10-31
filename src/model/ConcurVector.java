@@ -212,15 +212,55 @@ public class ConcurVector extends SeqVector{
             smallerCV.sum();
             result = smallerCV.elements;
         }
-        double sum = 0;
-        for (double n: result) {
-            sum += n;
-        }
-        return sum;
+        SeqVector rs = new SeqVector(result);
+        return rs.sum();
+    }
+
+    /** Obtiene el valor promedio en el vector. */
+    public double mean() {
+        double total = sum();
+        return total / dimension();
+    }
+
+    /** Retorna el producto de este vector con otro.
+     * El producto vectorial consiste en la suma de los productos
+     * de cada coordenada.
+     * @param v, el vector a usar para realizar el producto.
+     * @precondition dimension() == v.dimension(). */
+    public double prod(SeqVector v) {
+        ConcurVector aux = new ConcurVector(dimension(), threads);
+        aux.assign(new SeqVector(this.elements));
+        aux.mul(v);
+        return aux.sum();
     }
 
 
+    /** Retorna la norma del vector.
+     *  Recordar que la norma se calcula haciendo la raiz cuadrada de la
+     *  suma de los cuadrados de sus coordenadas.
+     */
+    public double norm() {
+        ConcurVector aux = new ConcurVector(dimension(), threads);
+        aux.assign(new SeqVector(this.elements));
+        aux.mul(new SeqVector(this.elements));
+        return Math.sqrt(aux.sum());
+    }
 
+    /** Obtiene el valor maximo en el vector. */
+    public double max() {
+        this.organizeTasks(Operation.MAX);
+        this.finalized.allTaskCompleted();
+        double[] result = this.makeResult();
+        System.out.println(result);
+        while(result.length > threads){
+            ConcurVector smallerCV = seqToConcurVector(result, threads);
+            smallerCV.max();
+            result = smallerCV.elements;
+            System.out.println(result);
+        }
+        SeqVector rs = new SeqVector(result);
+        return rs.max();
+    }
 
 
     //   organizadores de tareas

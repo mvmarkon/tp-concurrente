@@ -17,7 +17,7 @@ public class TasksFinalized {
     public synchronized void addTask(Task task){
         finishedTasks++;
         finalized[task.getPosition()] = task;
-        notify();
+        notifyAll();
     }
 
     public synchronized void allTaskCompleted() {
@@ -28,7 +28,8 @@ public class TasksFinalized {
         finishedTasks = 0;
     }
 
-    public Task[] getFinalized() {
+    public synchronized Task[] getFinalized() {
+        notifyAll();
         return finalized;
     }
 }
