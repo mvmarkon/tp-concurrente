@@ -58,52 +58,58 @@ public class Main {
             System.out.println(cv.get(i));
         }
 */
-        int threads = 5;
-        //double[] el = {2,3,5,6,45,2,3,4,5,1};
-        int dimension = 8;
+        int threads = 1;
+        double[] el = {3,4,500,100};
+        int dimension = 4;
 
         ConcurVector cv = new ConcurVector(dimension, threads);
-
-        // prueba para SET
-        cv.set(2);
+        //cv.setElements(el);
+       ConcurVector cv2 = new ConcurVector(dimension, threads);
+       cv.setElements(el);
+       // prueba para SET
+        //cv.set(1);
+        //cv2.set(3);
        // cv.setElements(el);
         //cv.verlindo();
-
+        //cv.add(cv2);
         //SeqVector sv = new SeqVector(2);
         //sv.set(2);
 
         // prueba para ADD
-        //cv.add(sv);
+
+        //cv.add();
 
         // prueba para ASSIGN
-        //cv.assign(sv);
+        //cv.assign(cv2);
 
         // prueba para MUL
-        //cv.mul(sv);
+        //cv.mul(cv2);
 
         //Prueba de ABS
 
         //cv.abs();
 
         //PRUEBA DE SUM
-        //System.out.println("SUMAAAAAAAA" + cv.sum());
-        //System.out.println("MEAN/PROMEDIO" + cv.mean());
-        //System.out.println("PROD" + cv.prod(sv));
-        //System.out.println("MAX" + cv.max());
+        //System.out.println("SUMAAAAAAAA " + cv.sum());
+        //System.out.println("MEAN/PROMEDIO " + cv.mean());
+        //System.out.println("PROD " + cv.prod(cv2));
+        //System.out.println("NORM " + cv.norm());
+        System.out.println("MAX " + cv.max());
 
-/*
+
         //  prueba para ASSIGN con MASK
-        SeqVector mask = new SeqVector(11);
-        //mask.set(0);
-        mask.set(-1);
+        /*ConcurVector mask = new ConcurVector(dimension, threads);
+        mask.set(0);
+        //mask.set(-1);
         mask.set(0, 7);
         mask.set(1, 7);
-        cv.assign(mask, sv);
-*/
+        cv.assign(mask, cv2);
 
+        mask.verlindo();*/
 
         // SIEMPRE SE MUESTRA AL FINAL CONCUR VECTOR
         //cv.verlindo();
+        //cv2.verlindo();
 
     }
 }

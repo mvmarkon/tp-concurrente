@@ -119,7 +119,6 @@ public class ConcurVector {
         //this.barrier.allTaskscreated();
         this.barrier.canProceed();
         this.makeResultVector();
-        verlindo();
     }
 
 
@@ -230,9 +229,9 @@ public class ConcurVector {
     }
 
     /** Obtiene el valor maximo en el vector. */
-    /*public synchronized double max() {
+    public synchronized double max() {
         this.organizeTasks(Operation.MAX);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         double[] result = this.makeResult();
         System.out.println(result);
         while(result.length > threads){
@@ -243,7 +242,7 @@ public class ConcurVector {
         }
         SeqVector rs = new SeqVector(result);
         return rs.max();
-    }*/
+    }
 
 
     //   organizadores de tareas
@@ -313,7 +312,27 @@ public class ConcurVector {
     }
 
 
+    /** Retorna la longitud del vector; es decir, su dimension. */
+    public int dimension() {
+        return elements.length;
+    }
 
+
+    /** Retorna el elemento del vector en la posicion i.
+     * @param i, la posicion del elemento a ser retornado.
+     * @precondition 0 <= i < dimension(). */
+    public double get(int i) {
+        return elements[i];
+    }
+
+
+    /** Pone el valor d en la posicion i del vector.
+     * @param i, la posicion a setear.
+     * @PARAM D, EL VALOR A SER ASIGNADO EN LA POSICION I.
+     * @precondition 0 <= i < dimension. */
+    public void set(int i, double d) {
+        elements[i] = d;
+    }
 
 
 }

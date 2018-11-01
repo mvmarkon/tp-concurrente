@@ -22,15 +22,7 @@ public class TasksFinalized {
         finalized[task.getPosition()] = task;
         notifyAll();
     }
-
-    /*public synchronized void allTaskCompleted() {
-        while(finishedTasks < tasks) {
-            try { wait(); }
-            catch (InterruptedException e) {}
-        }
-        finishedTasks = 0;
-    }
-*/
+    
     public synchronized Task[] getFinalized() {
         return finalized;
     }
