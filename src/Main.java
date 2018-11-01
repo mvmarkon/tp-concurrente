@@ -58,9 +58,9 @@ public class Main {
             System.out.println(cv.get(i));
         }
 */
-        int threads = 3;
+        int threads = 5;
         //double[] el = {2,3,5,6,45,2,3,4,5,1};
-        int dimension = 6;
+        int dimension = 8;
 
         ConcurVector cv = new ConcurVector(dimension, threads);
 

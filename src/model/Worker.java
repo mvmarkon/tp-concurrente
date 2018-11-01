@@ -7,13 +7,15 @@ public class Worker extends Thread {
     private Bafer bafer;
     private TasksFinalized tasksFinalized;
     private int id;
+    Barrier barrier;
 
 
 
-    public Worker(Bafer bafer, TasksFinalized tasksFinalized, int n){
+    public Worker(Bafer bafer, TasksFinalized tasksFinalized, Barrier barrier, int n){
         this.bafer = bafer;
         this.tasksFinalized = tasksFinalized;
         this.id = n;
+        this.barrier = barrier;
     }
 
     private void processTask( Task ttp) {
@@ -57,14 +59,16 @@ public class Worker extends Thread {
 
     public void run(){
         while(true) {
-            ver();
-            System.out.println("Por sacar tarea");
+            //ver();
+            //System.out.println("Por sacar tarea");
             Task taskBusy = this.bafer.dequeue();
-            ver();
-            System.out.println("Saco tarea");
-            taskBusy.ver();
+            //this.barrier.workStarted();
+            //ver();
+            //System.out.println("Saco tarea");
+            //taskBusy.ver();
             this.processTask(taskBusy);
             this.tasksFinalized.addTask(taskBusy);
+            this.barrier.taskdone();
         }
     }
 

@@ -13,6 +13,7 @@ public class ConcurVector {
     int[] balancedData;
     int loadedTask;
     ThreadPool tp;
+    Barrier barrier;
 
 
     public ConcurVector(int dim, int threads){
@@ -21,9 +22,10 @@ public class ConcurVector {
         this.threads = threads;
         this.balancedData = this.balance(dim, threads);
         this.buf = new Bafer(loadedTask);
-        this.finalized = new TasksFinalized(loadedTask);
+        this.finalized = new TasksFinalized();
+        this.barrier = new Barrier();
         this.tp = new ThreadPool(threads);
-        tp.createWorkers(this.buf, this.finalized);
+        tp.createWorkers(this.buf, this.finalized, this.barrier);
     }
 
     public synchronized ConcurVector seqToConcurVector(double[] sv, int threads) {
@@ -49,7 +51,7 @@ public class ConcurVector {
     }
 
 
-    private int[] balance(int dimension, int threads) {
+    private synchronized int[] balance(int dimension, int threads) {
         int carga = (dimension / threads);
         int[] arrayThreads = new int[threads];
         for (int i = 0; i < arrayThreads.length; i++) {
@@ -63,7 +65,6 @@ public class ConcurVector {
             if (load > 0)
                 loadedTask++;
         }
-        //this.setBalancedData(arrayThreads);
         return arrayThreads;
     }
 
@@ -73,10 +74,7 @@ public class ConcurVector {
     }
 
 
-
-
-
-    private void makeResultVector() {
+    private synchronized void makeResultVector() {
         int offset = 0;
         for (Task ts: finalized.getFinalized()) {
             for (int ti = 0; ti < ts.getOriginalVector().dimension(); ti++) {
@@ -86,7 +84,7 @@ public class ConcurVector {
             offset += ts.getOriginalVector().dimension();
         }
     }
-    private double[] makeResult() {
+    private synchronized double[] makeResult() {
         double[] resultElements = new double[finalized.getFinalized().length];
         for (Task ts: finalized.getFinalized()) {
             resultElements[ts.getPosition()] = ts.getResult();
@@ -118,7 +116,8 @@ public class ConcurVector {
     public synchronized void set(double d) {
         System.out.println("SET");
         this.organizeTasks(d, Operation.SET);
-        this.finalized.allTaskCompleted();
+        //this.barrier.allTaskscreated();
+        this.barrier.canProceed();
         this.makeResultVector();
         verlindo();
     }
@@ -131,7 +130,7 @@ public class ConcurVector {
     public synchronized void add(ConcurVector v) {
         System.out.println("ADD");
         this.organizeTasks(v, Operation.ADD);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         this.makeResultVector();
     }
 
@@ -145,7 +144,7 @@ public class ConcurVector {
     public synchronized void assign(ConcurVector v) {
         System.out.println("ASSIGN simple");
         this.organizeTasks(v, Operation.ASSIGN);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         this.makeResultVector();
     }
 
@@ -161,7 +160,7 @@ public class ConcurVector {
     public synchronized void assign(ConcurVector mask, ConcurVector v) {
         System.out.println("ASSIGN with mask");
         this.organizeTasks(mask, v, Operation.ASSIGN_MASK);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         this.makeResultVector();
     }
 
@@ -173,7 +172,7 @@ public class ConcurVector {
      * @precondition dimension() == v.dimension(). */
     public synchronized void mul(ConcurVector v) {
         this.organizeTasks(v, Operation.MUL);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         this.makeResultVector();
     }
 
@@ -182,14 +181,14 @@ public class ConcurVector {
     /** Obtiene el valor absoluto de cada elemento del vector. */
     public synchronized void abs() {
         this.organizeTasks(Operation.ABS);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         this.makeResultVector();
     }
 
     /** Obtiene la suma de todos los valores del vector. */
     public synchronized double sum() {
         this.organizeTasks(Operation.SUM);
-        this.finalized.allTaskCompleted();
+        this.barrier.canProceed();
         double[] result = this.makeResult();
         while(result.length > threads){
             ConcurVector smallerCV = seqToConcurVector(result, threads);
@@ -250,7 +249,9 @@ public class ConcurVector {
     //   organizadores de tareas
 
 
-    private void organizeTasks(double d, Operation operation){
+    private synchronized void organizeTasks(double d, Operation operation){
+        this.finalized.setTasks(this.loadedTask);
+        this.barrier.setWorkers(this.loadedTask);
         int offset = 0;
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){
@@ -260,12 +261,14 @@ public class ConcurVector {
             }
             offset += balancedData[i];
         }
-
+        System.out.println("Se crearon y  agregaron las tareas");
     }
 
 
 
-    private void organizeTasks(Operation operation){
+    private synchronized void organizeTasks(Operation operation){
+        this.finalized.setTasks(this.loadedTask);
+        this.barrier.setWorkers(this.loadedTask);
         int offset = 0;
         for (int i = 0; i < this.balancedData.length; i++){
             if (this.balancedData[i] > 0){
@@ -274,10 +277,13 @@ public class ConcurVector {
             }
             offset += this.balancedData[i];
         }
+        System.out.println("Se crearon y  agregaron las tareas");
     }
 
 
-    private void organizeTasks(ConcurVector v, Operation operation){
+    private synchronized void organizeTasks(ConcurVector v, Operation operation){
+        this.finalized.setTasks(this.loadedTask);
+        this.barrier.setWorkers(this.loadedTask);
         int offset = 0;
         for (int i = 0; i < this.balancedData.length; i++){
             if (this.balancedData[i] > 0){
@@ -290,7 +296,9 @@ public class ConcurVector {
     }
 
 
-    private void organizeTasks(ConcurVector mask, ConcurVector v, Operation operation){
+    private synchronized void organizeTasks(ConcurVector mask, ConcurVector v, Operation operation){
+        this.finalized.setTasks(this.loadedTask);
+        this.barrier.setWorkers(this.loadedTask);
         int offset = 0;
         for (int i = 0; i < balancedData.length; i++){
             if (balancedData[i] > 0){

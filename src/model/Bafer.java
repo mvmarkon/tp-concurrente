@@ -4,7 +4,7 @@ public class Bafer {
 
     int size;
     private Task[] data;
-    private int begin = 0, end = 0;
+    private int begin = 0, end = -1, count = 0;
 
     public int getSize() {
         return this.size;
@@ -18,42 +18,46 @@ public class Bafer {
 
 
     public synchronized void queue (Task task) {
-        while ( isFull ()) {
+        while ( isFull()) {
             try {
+                System.out.println("Se INTENTA ENCOLAR");
                 wait();
-                task.ver();
+//                task.ver();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        this.end = next(this.end);
         this.data[this.end] = task;
-        System.out.println("QUEUED TASK: ");
-        task.ver();
-        this.end  = next(this.end);
-        notifyAll ();
+        //System.out.println("QUEUED TASK: ");
+        //task.ver();
+        count++;
+        notifyAll();
     }
 
 
     public synchronized Task dequeue () {
-        while ( isEmpty ()) {
+        while ( isEmpty()) {
             try {
-                ver();
-                wait ();
+                System.out.println("Se INTENTA DESENCOLAR");
+               // ver();
+                wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         Task result = this.data [this.begin];
         this.begin = next(this.begin);
-        System.out.print("DEQUEUED");
-        result.ver();
+        //System.out.print("DEQUEUED");
+        //result.ver();
+        count--;
         notifyAll();
         return result ;
     }
 
-    public synchronized boolean isEmpty () { return this.begin == this.end ; }
-    public synchronized boolean isFull () { return this.end == this.size; }
-    public synchronized int next ( int i) { return (i+1)%(this.size); }
+    public synchronized boolean isEmpty() { return count == 0 ; }
+    public synchronized boolean isFull() { return this.end == this.size; }
+    public synchronized int next( int i) { return (i+1)%(this.size); }
 
     /*public static void main(String[] args) {
 
